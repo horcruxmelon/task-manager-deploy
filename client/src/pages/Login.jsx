@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import oliveTrees from "../assets/olive-trees.jpg";
 import { useState } from "react";
-import axios from "axios";
+import { login } from "../api/auth";
 import Toast from "../components/Toast";
 import "../App.css";
 
@@ -16,11 +16,7 @@ function Login() {
     e.preventDefault();
     setLoading(true);
     try {
-      const res = await axios.post(
-        "http://localhost:5000/api/auth/login",
-        { email, password },
-        { headers: { "Content-Type": "application/json" } }
-      );
+      const res = await login({ email, password });
 
       localStorage.setItem("token", res.data.token);
       localStorage.setItem("user", JSON.stringify(res.data.user));

@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import oliveTrees from "../assets/olive-trees.jpg";
 import { useState } from "react";
-import axios from "axios";
+import { signup } from "../api/auth";
 import Toast from "../components/Toast";
 import "../App.css";
 
@@ -18,11 +18,7 @@ function Signup() {
     setLoading(true);
 
     try {
-      await axios.post(
-        "http://localhost:5000/api/auth/signup",
-        { username, email, password },
-        { headers: { "Content-Type": "application/json" } }
-      );
+      await signup({ username, email, password });
 
       setToast({ message: "Account created successfully! Redirecting to login...", type: "success" });
       setTimeout(() => navigate("/login"), 2000);

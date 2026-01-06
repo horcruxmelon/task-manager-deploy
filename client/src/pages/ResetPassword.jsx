@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import axios from "axios";
+import { resetPassword } from "../api/auth";
 import Toast from "../components/Toast";
 import "../App.css";
 
@@ -16,11 +16,7 @@ function ResetPassword() {
     setLoading(true);
 
     try {
-      await axios.post(
-        `http://localhost:5000/api/auth/reset-password/${token}`,
-        { password },
-        { headers: { "Content-Type": "application/json" } }
-      );
+      await resetPassword(token, password);
 
       setToast({ message: "Password reset successful! Redirecting...", type: "success" });
       setTimeout(() => navigate("/login"), 2000);
