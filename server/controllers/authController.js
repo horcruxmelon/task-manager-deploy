@@ -93,7 +93,9 @@ exports.forgotPassword = async (req, res) => {
 
     const resetLink = `${process.env.CLIENT_URL}/reset-password/${token}`;
 
-    await transporter.sendMail({
+    res.json({ message: "Password reset link sent" });
+
+    transporter.sendMail({
       to: email,
       subject: "Reset your password",
       html: `
@@ -105,9 +107,7 @@ exports.forgotPassword = async (req, res) => {
         </p>
         <p>This link expires in 15 minutes.</p>
       `,
-    });
-
-    res.json({ message: "Password reset link sent" });
+    }).catch(err => console.error("Failed to send password reset email:", err));
   } catch (err) {
     console.error("FORGOT PASSWORD ERROR:", err);
     res.status(500).json({ message: "Failed to send reset link" });
