@@ -22,7 +22,27 @@ const TaskSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
         required: true
-    }
+    },
+    assignedTo: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    },
+    assignedBy: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    },
+    comments: [{
+        userId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User'
+        },
+        username: String,
+        text: String,
+        timestamp: {
+            type: Date,
+            default: Date.now
+        }
+    }]
 }, { timestamps: true });
 
 module.exports = mongoose.model('Task', TaskSchema);

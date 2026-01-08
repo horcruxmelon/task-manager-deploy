@@ -87,9 +87,11 @@ function Login() {
               {loading ? "Signing in..." : "Sign In"}
             </button>
 
+            {/* 
             <p style={{ marginTop: "1.5rem", textAlign: "center", color: "var(--text-muted)" }}>
               Don't have an account? <Link to="/signup">Sign up</Link>
-            </p>
+            </p> 
+            */}
           </form>
         </div>
 

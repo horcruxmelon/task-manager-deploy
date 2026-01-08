@@ -1,9 +1,18 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 import "../App.css";
 
 function Sidebar() {
     const location = useLocation();
     const navigate = useNavigate();
+    const [user, setUser] = useState({});
+
+    useEffect(() => {
+        const userData = localStorage.getItem("user");
+        if (userData) {
+            setUser(JSON.parse(userData));
+        }
+    }, []);
 
     const handleLogout = () => {
         localStorage.removeItem("token");
@@ -12,10 +21,16 @@ function Sidebar() {
     };
 
     const menuItems = [
-        { label: "Dashboard", path: "/dashboard", icon: "📊" },
-        { label: "Tasks", path: "/tasks", icon: "📋" },
-        { label: "Settings", path: "/settings", icon: "⚙️" },
+        { label: "Command Center", path: "/dashboard", icon: "📊", roles: ['admin', 'manager', 'member'] },
+        { label: "Missions", path: "/tasks", icon: "📋", roles: ['admin', 'manager', 'member'] },
+        { label: "Personnel", path: "/users", icon: "👥", roles: ['admin'] },
+        { label: "Audit Log", path: "/activity", icon: "📜", roles: ['admin', 'manager'] },
+        { label: "Settings", path: "/settings", icon: "⚙️", roles: ['admin', 'manager', 'member'] },
     ];
+
+    const filteredItems = menuItems.filter(item =>
+        item.roles.includes(user.role || 'member')
+    );
 
     return (
         <div className="glass-panel" style={{
@@ -37,13 +52,23 @@ function Sidebar() {
                 }}>
                     Task Flow
                 </h2>
-                <p style={{ fontSize: "0.9rem", color: "var(--text-muted)" }}>
-                    Digital Garden
-                </p>
+                <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
+                    <span style={{ fontSize: "0.9rem", color: "var(--text-muted)" }}>Status:</span>
+                    <span style={{
+                        fontSize: "0.8rem",
+                        padding: "2px 8px",
+                        borderRadius: "10px",
+                        background: "rgba(16, 185, 129, 0.2)",
+                        color: "#10b981",
+                        border: "1px solid #10b981"
+                    }}>
+                        ACTIVE
+                    </span>
+                </div>
             </div>
 
             <div style={{ display: "flex", flexDirection: "column", gap: "1rem", flex: 1 }}>
-                {menuItems.map((item) => {
+                {filteredItems.map((item) => {
                     const isActive = location.pathname === item.path;
                     return (
                         <Link

@@ -17,7 +17,11 @@ const UserSchema = new mongoose.Schema({
     },
     resetToken: String,
     resetTokenExpiry: Date,
-
+    role: {
+        type: String,
+        enum: ['admin', 'manager', 'member'],
+        default: 'member'
+    }
 
 }, { timestamps: true });
 module.exports = mongoose.model('User', UserSchema);

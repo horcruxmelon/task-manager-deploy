@@ -1,7 +1,7 @@
 const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const transporter = require("../config/mailer");
+const sgMail = require("../config/mailer");
 const crypto = require("crypto");
 
 // SIGNUP
@@ -64,12 +64,24 @@ exports.login = async (req, res) => {
       { expiresIn: '1h' }
     );
 
+    const { logActivity } = require('./activityController');
+    await logActivity(
+      user._id,
+      user.username,
+      user.role,
+      'User logged in',
+      'user',
+      user._id,
+      {}
+    );
+
     res.json({
       token,
       user: {
         id: user._id,
         username: user.username,
-        email: user.email
+        email: user.email,
+        role: user.role
       }
     });
   } catch (error) {
@@ -93,10 +105,9 @@ exports.forgotPassword = async (req, res) => {
 
     const resetLink = `${process.env.CLIENT_URL}/reset-password/${token}`;
 
-    res.json({ message: "Password reset link sent" });
-
-    transporter.sendMail({
+    const msg = {
       to: email,
+      from: process.env.SENDGRID_SENDER_EMAIL,
       subject: "Reset your password",
       html: `
         <p>You requested a password reset.</p>
@@ -107,7 +118,11 @@ exports.forgotPassword = async (req, res) => {
         </p>
         <p>This link expires in 15 minutes.</p>
       `,
-    }).catch(err => console.error("Failed to send password reset email:", err));
+    };
+
+    res.json({ message: "Password reset link sent" });
+
+    sgMail.send(msg).catch(err => console.error("Failed to send password reset email:", err));
   } catch (err) {
     console.error("FORGOT PASSWORD ERROR:", err);
     res.status(500).json({ message: "Failed to send reset link" });

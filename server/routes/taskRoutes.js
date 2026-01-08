@@ -18,5 +18,6 @@ router.get('/:id', getTask);
 router.post('/', createTask);
 router.put('/:id', updateTask);
 router.delete('/:id', deleteTask);
+router.post('/:id/comments', require('../controllers/taskController').addComment);
 
 module.exports = router;

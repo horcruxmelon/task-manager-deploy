@@ -16,9 +16,12 @@ app.use(express.json());
 
 app.use('/api/auth', authRoutes);
 app.use('/api/tasks', taskRoutes);
+app.use('/api/users', require('./routes/userRoutes'));
+app.use('/api/activity', require('./routes/activityRoutes'));
 
 const authMiddleware = require('./middleware/authMiddleware');
-app.get('/api/dashboard', authMiddleware, (req, res) => {
+app.get('/api/dashboard', authMiddleware, async (req, res) => {
+  // Basic dashboard message, detailed stats will be fetched via specific endpoints
   res.json({ message: `Welcome to the dashboard!` });
 });
 
